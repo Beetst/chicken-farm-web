@@ -1,57 +1,13 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light">
-<title>ตลาดไก่ชน - ลงประกาศ/เสนอราคา</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <h1>🐓 ตลาดไก่ชน</h1>
-      <p>ลงประกาศขายไก่ชน และเสนอราคาได้ง่ายๆ</p>
-    </div>
-  </header>
-
-  <main class="container">
-    <section class="listing-section">
-      <div class="listing-header">
-        <h2>ประกาศไก่ชนทั้งหมด</h2>
-        <input type="text" id="search" placeholder="ค้นหาชื่อไก่หรือพื้นที่...">
-      </div>
-      <div id="listings" class="listings-grid"></div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2026 ตลาดไก่ชน — เว็บทดลองเริ่มต้น</p>
-      <p><a href="admin.html" style="color:#8b3a2f;">สำหรับเจ้าของฟาร์ม</a></p>
-    </div>
-  </footer>
-
-  <div id="offer-modal" class="modal hidden">
-    <div class="modal-content">
-      <button class="modal-close" id="modal-close">&times;</button>
-      <h3 id="modal-title"></h3>
-      <div id="modal-offers"></div>
-      <form id="offer-form">
-        <input type="hidden" id="offer-listing-id">
-        <div class="form-row">
-          <label for="offer-name">ชื่อผู้เสนอราคา</label>
-          <input type="text" id="offer-name" required>
-        </div>
-        <div class="form-row">
-          <label for="offer-price">ราคาที่เสนอ (บาท)</label>
-          <input type="number" id="offer-price" required min="0">
-        </div>
-        <button type="submit">เสนอราคา</button>
-      </form>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
