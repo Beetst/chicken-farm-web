@@ -19,7 +19,7 @@ export async function signIn(credentials, request = signInRequest) {
   }
 }
 
-export const UNSUPPORTED_PROVIDER_MESSAGE = 'This sign-in method is not available.'
+export const UNSUPPORTED_PROVIDER_MESSAGE = 'ไม่รองรับวิธีเข้าสู่ระบบนี้'
 
 export function signInWithProvider(provider, start = startSocialSignIn) {
   if (!isSupportedProvider(provider)) throw new AuthError(UNSUPPORTED_PROVIDER_MESSAGE)

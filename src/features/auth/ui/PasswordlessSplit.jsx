@@ -6,21 +6,13 @@ export default function PasswordlessSplit() {
     <main className="ps">
       <aside className="ps-hero">
         <div className="ps-brand">◆ Brand</div>
-        <div>
-          <h2>One tap to get in</h2>
-          <ul>
-            <li>No passwords to leak or forget</li>
-            <li>Protected by LINE and Google security</li>
-            <li>Works on any phone</li>
-          </ul>
-        </div>
+        <h2>แตะเดียว เข้าได้เลย</h2>
       </aside>
       <section className="ps-panel">
         <div className="ps-inner">
-          <h1>Welcome</h1>
-          <p className="ps-sub">Choose how you want to sign in</p>
+          <h1>ยินดีต้อนรับ</h1>
           <SocialButtons />
-          <p className="ps-terms">By continuing you agree to our <a href="#terms">Terms</a> and <a href="#privacy">Privacy Policy</a>.</p>
+          <p className="ps-terms"><a href="#terms">ข้อกำหนด</a> · <a href="#privacy">ความเป็นส่วนตัว</a></p>
         </div>
       </section>
     </main>

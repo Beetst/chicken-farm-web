@@ -26,7 +26,7 @@ const ICONS = { line: LineIcon, google: GoogleIcon }
 
 // Shared provider buttons for passwordless designs.
 export default function SocialButtons() {
-  const { pendingProvider, error, signIn } = useSocialLogin()
+  const { pendingProvider, lastProvider, error, signIn } = useSocialLogin()
   return (
     <div className="sb">
       {Object.values(SOCIAL_PROVIDERS).map(({ id, label }) => {
@@ -34,7 +34,8 @@ export default function SocialButtons() {
         return (
           <button key={id} type="button" className={`sb-btn sb-${id}`} onClick={() => signIn(id)} disabled={!!pendingProvider}>
             <Icon />
-            <span>{pendingProvider === id ? 'Redirecting…' : `Continue with ${label}`}</span>
+            <span>{pendingProvider === id ? 'กำลังไป…' : `เข้าสู่ระบบด้วย ${label}`}</span>
+            {lastProvider === id && !pendingProvider && <em className="sb-last">ใช้ล่าสุด</em>}
           </button>
         )
       })}

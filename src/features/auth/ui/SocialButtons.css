@@ -6,3 +6,5 @@
 .sb-line { background: #06c755; color: #fff; border: 0; }
 .sb-google { background: #fff; color: #1f1f1f; border: 1px solid #dadce0; }
 .sb-error { margin: 0; color: #dc2626; font-size: .875rem; text-align: center; }
+.sb-btn { position: relative; min-height: 52px; }
+.sb-last { position: absolute; top: -8px; right: 10px; padding: 2px 8px; border-radius: 999px; background: #111827; color: #fff; font: 600 .7rem system-ui, sans-serif; font-style: normal; }

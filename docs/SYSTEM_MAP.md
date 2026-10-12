@@ -29,6 +29,7 @@ features/auth/ui/Passwordless*.jsx → ui/SocialButtons.jsx → useSocialLogin.j
 | `src/features/auth/ui/SocialButtons.jsx` | Shared LINE / Google buttons |
 | `src/features/auth/social.test.js` | Tests for provider allow-list and redirect adapter |
 | `src/infrastructure/authClient.js` | Backend adapter (currently fake) |
+| `src/infrastructure/lastProvider.js` | Remembers last-used provider id for the "ใช้ล่าสุด" badge (no tokens) |
 
 ## Routes
 `#/` gallery · `#/passwordless` · `#/passwordless-split` · `#/minimal` · `#/split` · `#/dark` · `#/social`
@@ -39,3 +40,8 @@ Frontend only. Authentication, authorization and authoritative validation belong
 Passwordless designs never handle passwords or tokens in the browser. The backend must own the whole OAuth flow:
 register LINE Login / Google OAuth apps, keep client secrets server-side, use `state` (and PKCE), exchange the code
 server-side, verify the ID token, then set an `HttpOnly; Secure; SameSite` session cookie and redirect back.
+
+## UX principles (passwordless designs)
+- One heading, two buttons, one tiny legal line. No paragraphs.
+- Thai labels for Thai customers; big 52px tap targets; LINE first (most used in Thailand).
+- "ใช้ล่าสุด" badge on the provider used last, so returning users tap without thinking.
