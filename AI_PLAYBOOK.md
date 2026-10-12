@@ -11,7 +11,7 @@
 
 ## 0. Project facts (edit per project)
 
-- Owner: non-programmer. Works from a phone. Relies on AI for all code.
+- Owner: non-programmer. Has a computer and a phone. Relies on AI for all code.
 - Goal: <what this project is, who uses it>
 - Stack: <e.g. React + Vite, static hosting>
 - Commands: `npm test` · `npm run lint` · `npm run build`
@@ -24,8 +24,8 @@
   Ask only when the choice is irreversible, costs money, deletes data/work, or changes security.
 - Always end with: what changed, how to see it (link or screenshot), what is still not done.
 - Never claim something works unless you ran it. Show evidence (test output, screenshot).
-- Owner has no laptop: prefer solutions that need zero manual setup; if setup is unavoidable,
-  give step-by-step phone instructions with exact button names.
+- Prefer solutions that need no manual setup; if setup is unavoidable, give step-by-step
+  instructions with exact button names (ask computer or phone if the steps differ).
 
 ## 2. Workflow for every task
 
