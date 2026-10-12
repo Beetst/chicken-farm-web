@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI ค้นหาข้อมูลอย่างไร</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--line:#334155;--text:#e2e8f0;--muted:#94a3b8;--a:#38bdf8;--b:#a78bfa;--c:#34d399;--d:#fbbf24;--e:#f472b6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Sarabun,system-ui,sans-serif;line-height:1.65}
+header{padding:48px 16px 24px;text-align:center;background:radial-gradient(circle at 50% 0,#1e3a8a55,transparent 70%)}
+h1{margin:0 0 8px;font-size:clamp(1.7rem,4.5vw,2.6rem)}
+header p{color:var(--muted);max-width:680px;margin:0 auto}
+nav{position:sticky;top:0;z-index:5;background:#0f172aee;backdrop-filter:blur(6px);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:10px 16px}
+nav a{color:var(--muted);text-decoration:none;white-space:nowrap;padding:4px 12px;border-radius:99px;border:1px solid var(--line);font-size:.9rem}
+nav a:hover{color:var(--text);border-color:var(--a)}
+main{max-width:1000px;margin:0 auto;padding:0 16px 64px}
+section{margin-top:48px}
+h2{font-size:1.5rem;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.tag{display:inline-block;font-size:.8rem;padding:2px 10px;border-radius:99px;background:#0b1222;color:var(--a);margin-bottom:6px}
+#net{width:100%;height:auto;display:block;background:#0b1222;border-radius:12px}
+.node circle{stroke-width:2;transition:.3s}
+.node text{fill:var(--text);font-size:13px;text-anchor:middle;font-family:inherit}
+.edge{stroke:var(--line);stroke-width:2;transition:.3s}
+.edge.on{stroke:var(--d);stroke-width:3}
+.node.on circle{filter:drop-shadow(0 0 8px currentColor);stroke-width:4}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+button{font:inherit;background:var(--a);color:#0f172a;border:0;border-radius:10px;padding:8px 16px;font-weight:600;cursor:pointer}
+button.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+button:disabled{opacity:.4;cursor:default}
+#stepBox h3{margin:0 0 6px;color:var(--d)}
+#stepBox p{margin:0;color:var(--muted)}
+.progress{display:flex;gap:4px;margin-top:12px}
+.progress span{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.progress span.on{background:var(--d)}
+.tokens{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tokens span{background:#0b1222;border:1px solid var(--b);color:var(--b);border-radius:6px;padding:2px 8px;font-family:monospace}
+input[type=text]{width:100%;font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0b1222;color:var(--text)}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:.95rem}
+.bar .fill{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--c),var(--a));transition:width .6s}
+.bar .lab{flex:0 0 46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{flex:1;background:#0b1222;border-radius:5px}
+.bar .num{flex:0 0 40px;text-align:right;font-family:monospace;color:var(--muted)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:8px 0}
+summary{cursor:pointer;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{color:var(--a)}
+.quiz button{display:block;width:100%;text-align:left;margin:6px 0;background:#0b1222;color:var(--text);border:1px solid var(--line);font-weight:400}
+.quiz button.ok{border-color:var(--c);color:var(--c)}
+.quiz button.no{border-color:var(--e);color:var(--e)}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:24px}
+@media (max-width:600px){.node text{font-size:16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔎 AI / LLM ค้นหาข้อมูลอย่างไร?</h1>
+  <p>สื่อการสอนแบบโต้ตอบ: ดูเส้นทางของ “คำถาม” ตั้งแต่พิมพ์ จนวิ่งผ่านเครือข่ายอินเทอร์เน็ต ฐานข้อมูลเวกเตอร์ และกลับมาเป็นคำตอบ</p>
+</header>
+<nav>
+  <a href="#basics">1. พื้นฐาน</a><a href="#sim">2. จำลองเครือข่าย</a><a href="#token">3. Token</a>
+  <a href="#vector">4. ค้นหาแบบเวกเตอร์</a><a href="#compare">5. เปรียบเทียบ</a><a href="#quiz">6. แบบทดสอบ</a>
+</nav>
+<main>
+
+<section id="basics">
+  <h2>1. LLM “รู้” อะไร และทำไมต้องค้นหา</h2>
+  <div class="grid">
+    <div class="card"><span class="tag">ความรู้ในตัว</span><h3>Parametric Memory</h3><p>LLM เรียนจากข้อความจำนวนมหาศาล แล้วเก็บรูปแบบภาษาไว้ใน “น้ำหนัก” (parameters) แต่ความรู้หยุดอยู่ที่วันตัดข้อมูล (knowledge cutoff)</p></div>
+    <div class="card"><span class="tag">ปัญหา</span><h3>ข้อมูลเก่า / มโน</h3><p>ถ้าถามเรื่องใหม่หรือเฉพาะทาง โมเดลอาจตอบผิดอย่างมั่นใจ เรียกว่า <b>Hallucination</b></p></div>
+    <div class="card"><span class="tag">ทางแก้</span><h3>RAG + Tool Use</h3><p>ให้โมเดล “ไปค้นก่อนตอบ” (Retrieval-Augmented Generation) ทั้งจากเว็บและฐานข้อมูลขององค์กร แล้วนำผลมาใส่ในบริบท</p></div>
+  </div>
+</section>
+
+<section id="sim">
+  <h2>2. จำลอง: คำถามวิ่งผ่านเครือข่าย</h2>
+  <div class="card">
+    <svg id="net" viewBox="0 0 900 460" role="img" aria-label="แผนภาพเครือข่ายการค้นหาของ AI">
+      <g id="edges"></g><g id="packets"></g><g id="nodes"></g>
+    </svg>
+    <div class="controls">
+      <button id="prev" class="ghost">◀ ย้อน</button>
+      <button id="next">ขั้นถัดไป ▶</button>
+      <button id="auto" class="ghost">▶ เล่นอัตโนมัติ</button>
+      <button id="reset" class="ghost">↺ เริ่มใหม่</button>
+    </div>
+    <div id="stepBox"><h3></h3><p></p></div>
+    <div class="progress" id="prog"></div>
+  </div>
+</section>
+
+<section id="token">
+  <h2>3. ลองตัดคำเป็น Token</h2>
+  <div class="card">
+    <p>LLM ไม่ได้อ่านเป็นตัวอักษร แต่แบ่งข้อความเป็นชิ้นเล็ก ๆ เรียกว่า <b>token</b> แล้วแปลงเป็นตัวเลข (ตัวอย่างนี้เป็นการจำลองอย่างง่าย)</p>
+    <input type="text" id="tokIn" value="ราคาไข่ไก่วันนี้เท่าไหร่ What is the egg price today?">
+    <div class="tokens" id="tokOut"></div>
+    <p id="tokCount" style="color:var(--muted);margin:0"></p>
+  </div>
+</section>
+
+<section id="vector">
+  <h2>4. ค้นหาแบบเวกเตอร์ (Semantic Search)</h2>
+  <div class="card">
+    <p>เอกสารและคำถามถูกแปลงเป็น <b>Embedding</b> (ชุดตัวเลขที่แทน “ความหมาย”) แล้ววัดความใกล้ด้วย <b>Cosine Similarity</b> — คำต่างกันแต่ความหมายใกล้กันก็หาเจอ</p>
+    <input type="text" id="vecIn" value="ไก่ไข่ป่วย ทำยังไงดี">
+    <div id="vecOut" style="margin-top:12px"></div>
+    <p style="color:var(--muted);font-size:.9rem">* คะแนนจำลองจากคำ/แนวคิดที่ซ้อนกัน เพื่อให้เห็นหลักการ</p>
+  </div>
+</section>
+
+<section id="compare">
+  <h2>5. เปรียบเทียบวิธีค้นหา</h2>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <tr><th>วิธี</th><th>หลักการ</th><th>ข้อดี</th><th>ข้อจำกัด</th></tr>
+      <tr><td>Keyword (BM25)</td><td>นับคำที่ตรงกัน</td><td>เร็ว แม่นกับชื่อเฉพาะ</td><td>ไม่เข้าใจคำพ้องความหมาย</td></tr>
+      <tr><td>Vector Search</td><td>เทียบความหมายด้วย embedding</td><td>เข้าใจบริบท ข้ามภาษาได้</td><td>อาจพลาดตัวเลข/รหัสเป๊ะ ๆ</td></tr>
+      <tr><td>Hybrid + Rerank</td><td>รวมสองแบบ แล้วจัดลำดับใหม่</td><td>แม่นที่สุดในงานจริง</td><td>ซับซ้อน ใช้ทรัพยากรมากกว่า</td></tr>
+      <tr><td>Web Search Tool</td><td>LLM เรียก search engine ผ่านอินเทอร์เน็ต</td><td>ได้ข้อมูลล่าสุด</td><td>ต้องกรองแหล่งที่น่าเชื่อถือ</td></tr>
+      <tr><td>Agentic Search</td><td>ค้นหลายรอบ คิด-ค้น-อ่าน ซ้ำ</td><td>ตอบคำถามยากหลายขั้นได้</td><td>ช้าและแพงกว่า</td></tr>
+    </table>
+  </div>
+  <details><summary>Knowledge Graph คืออะไร?</summary><p>เก็บข้อมูลเป็น “โหนด” และ “ความสัมพันธ์” เช่น (ไก่) —ออก→ (ไข่) ทำให้ AI เดินตามเส้นเชื่อมเพื่อหาคำตอบหลายทอดได้ เรียกว่า GraphRAG</p></details>
+  <details><summary>ทำไมต้องอ้างอิงแหล่งที่มา (Citation)?</summary><p>เพื่อให้ผู้ใช้ตรวจสอบได้ว่าคำตอบมาจากเอกสารใด ลดความเสี่ยงจากการมโนของโมเดล</p></details>
+  <details><summary>เครือข่ายอินเทอร์เน็ตเกี่ยวอะไรด้วย?</summary><p>เวลาค้นเว็บ คำขอวิ่งผ่าน DNS (แปลงชื่อโดเมนเป็น IP) → HTTPS ไปยัง Search API → ได้ URL → ดึงหน้าเว็บจากเซิร์ฟเวอร์ต้นทาง (มักผ่าน CDN) → ส่งกลับมาเป็นข้อความให้โมเดลอ่าน</p></details>
+</section>
+
+<section id="quiz">
+  <h2>6. แบบทดสอบท้ายบท</h2>
+  <div id="quizBox" class="grid"></div>
+  <p id="score" style="color:var(--d);font-weight:700"></p>
+</section>
+</main>
+<footer>สื่อการสอน · AI/LLM Search & Network</footer>
+
+<script>
+// ---------- Network simulation ----------
+const N = {
+  user:{x:70,y:230,c:'#38bdf8',t:'👤 ผู้ใช้'},
+  app:{x:220,y:230,c:'#38bdf8',t:'💬 แอปแชต'},
+  llm:{x:400,y:230,c:'#a78bfa',t:'🧠 LLM'},
+  emb:{x:400,y:80,c:'#a78bfa',t:'🔢 Embedding'},
+  vdb:{x:600,y:70,c:'#34d399',t:'🗂️ Vector DB'},
+  dns:{x:560,y:390,c:'#fbbf24',t:'🌐 DNS'},
+  api:{x:600,y:230,c:'#fbbf24',t:'🔍 Search API'},
+  web1:{x:800,y:140,c:'#f472b6',t:'📄 เว็บ A'},
+  web2:{x:820,y:260,c:'#f472b6',t:'📄 เว็บ B'},
+  web3:{x:780,y:380,c:'#f472b6',t:'📄 เว็บ C'},
+  rank:{x:220,y:390,c:'#34d399',t:'⚖️ Reranker'}
+};
+const E=[['user','app'],['app','llm'],['llm','emb'],['emb','vdb'],['llm','dns'],['dns','api'],['llm','api'],['api','web1'],['api','web2'],['api','web3'],['llm','rank'],['vdb','llm']];
+const S=[
+ {n:['user'],e:[],h:'1. ผู้ใช้พิมพ์คำถาม',p:'เช่น “ราคาไข่ไก่วันนี้เท่าไหร่?” ข้อความถูกส่งจากเบราว์เซอร์ผ่าน HTTPS'},
+ {n:['app'],e:[['user','app']],h:'2. แอปเตรียม Prompt',p:'ใส่ system prompt, ประวัติแชต และรายการ “เครื่องมือ” (tools) ที่โมเดลเรียกใช้ได้'},
+ {n:['llm'],e:[['app','llm']],h:'3. LLM อ่านและตัดสินใจ',p:'ข้อความถูกแบ่งเป็น token โมเดลวิเคราะห์ว่าความรู้ในตัวพอไหม — คำถามนี้ต้องการข้อมูลล่าสุด จึงตัดสินใจ “ค้นหา”'},
+ {n:['emb','vdb'],e:[['llm','emb'],['emb','vdb']],h:'4. ค้นในฐานความรู้ภายใน (RAG)',p:'แปลงคำถามเป็นเวกเตอร์ แล้วหาเอกสารที่ความหมายใกล้ที่สุดใน Vector DB (Top-K)'},
+ {n:['dns'],e:[['llm','dns']],h:'5. DNS แปลงชื่อเป็น IP',p:'ก่อนเรียก Search API ต้องรู้ที่อยู่ IP ของเซิร์ฟเวอร์ ระบบจึงถาม DNS ก่อน'},
+ {n:['api'],e:[['dns','api'],['llm','api']],h:'6. เรียก Search API',p:'โมเดลสร้าง query เช่น “ราคาไข่ไก่ ตุลาคม 2026” แล้วส่งไป search engine ได้รายการ URL กลับมา'},
+ {n:['web1','web2','web3'],e:[['api','web1'],['api','web2'],['api','web3']],h:'7. ดึงหน้าเว็บแบบขนาน',p:'เปิดหลายเว็บพร้อมกันผ่านเครือข่าย ดึงเนื้อหา ตัด HTML ทิ้งเหลือแต่ข้อความ แล้วแบ่งเป็นชิ้น (chunks)'},
+ {n:['rank'],e:[['vdb','llm'],['llm','rank']],h:'8. จัดอันดับใหม่ (Rerank)',p:'รวมผลจากเว็บและฐานข้อมูล ให้คะแนนความเกี่ยวข้อง คัดเฉพาะชิ้นที่ดีที่สุดใส่ใน context window'},
+ {n:['llm'],e:[],h:'9. สร้างคำตอบ + อ้างอิง',p:'LLM อ่านข้อมูลที่ค้นได้ แล้วสร้างคำตอบทีละ token พร้อมแนบแหล่งที่มา (ถ้ายังไม่พอ อาจวนค้นอีกรอบ)'},
+ {n:['user'],e:[['app','llm'],['user','app']],h:'10. ส่งคำตอบกลับผู้ใช้',p:'คำตอบถูก stream กลับผ่านแอปไปยังหน้าจอ — ทั้งหมดนี้มักใช้เวลาเพียงไม่กี่วินาที'}
+];
+const svg=document.getElementById('net'),NS='http://www.w3.org/2000/svg';
+const mk=(t,a)=>{const el=document.createElementNS(NS,t);for(const k in a)el.setAttribute(k,a[k]);return el};
+const key=(a,b)=>[a,b].sort().join('-');
+const edgeEls={},nodeEls={};
+E.forEach(([a,b])=>{const l=mk('line',{x1:N[a].x,y1:N[a].y,x2:N[b].x,y2:N[b].y,class:'edge'});edgeEls[key(a,b)]=l;edges.appendChild(l)});
+for(const k in N){const g=mk('g',{class:'node'});g.style.color=N[k].c;
+ g.appendChild(mk('circle',{cx:N[k].x,cy:N[k].y,r:30,fill:'#1e293b',stroke:N[k].c}));
+ const t=mk('text',{x:N[k].x,y:N[k].y+50});t.textContent=N[k].t;g.appendChild(t);nodeEls[k]=g;nodes.appendChild(g)}
+const prog=document.getElementById('prog');S.forEach(()=>prog.appendChild(document.createElement('span')));
+let cur=0,timer=null;
+function packet(a,b){const p=mk('circle',{r:7,fill:'#fbbf24'});packets.appendChild(p);
+ const t0=performance.now(),d=700;(function f(t){const k=Math.min((t-t0)/d,1);
+ p.setAttribute('cx',N[a].x+(N[b].x-N[a].x)*k);p.setAttribute('cy',N[a].y+(N[b].y-N[a].y)*k);
+ k<1?requestAnimationFrame(f):p.remove()})(t0)}
+function show(i){cur=i;const s=S[i];
+ Object.values(edgeEls).forEach(e=>e.classList.remove('on'));Object.values(nodeEls).forEach(n=>n.classList.remove('on'));
+ s.n.forEach(n=>nodeEls[n].classList.add('on'));
+ s.e.forEach(([a,b])=>{edgeEls[key(a,b)].classList.add('on');i===9?packet(b,a):packet(a,b)});
+ stepBox.querySelector('h3').textContent=s.h;stepBox.querySelector('p').textContent=s.p;
+ [...prog.children].forEach((c,j)=>c.classList.toggle('on',j<=i));
+ prev.disabled=i===0;next.disabled=i===S.length-1}
+next.onclick=()=>cur<S.length-1&&show(cur+1);
+prev.onclick=()=>cur>0&&show(cur-1);
+reset.onclick=()=>{stop();show(0)};
+function stop(){clearInterval(timer);timer=null;auto.textContent='▶ เล่นอัตโนมัติ'}
+auto.onclick=()=>{if(timer)return stop();auto.textContent='⏸ หยุด';
+ if(cur===S.length-1)show(0);timer=setInterval(()=>cur<S.length-1?show(cur+1):stop(),2600)};
+show(0);
+
+// ---------- Tokenizer demo ----------
+function tokenize(s){const seg=window.Intl&&Intl.Segmenter?new Intl.Segmenter('th',{granularity:'word'}):null;
+ const words=seg?[...seg.segment(s)].map(x=>x.segment):s.split(/(\s+)/);
+ const out=[];words.forEach(w=>{if(!w.trim())return;
+  if(w.length>4&&/^[a-z]+$/i.test(w)){out.push(w.slice(0,3),'##'+w.slice(3))}else out.push(w)});return out}
+function hash(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))%50000;return h}
+function renderTok(){const t=tokenize(tokIn.value);
+ tokOut.innerHTML=t.map(x=>`<span title="id ${hash(x)}">${x.replace(/</g,'&lt;')}</span>`).join('');
+ tokCount.textContent=`${t.length} tokens · IDs: [${t.slice(0,8).map(hash).join(', ')}${t.length>8?', …':''}]`}
+tokIn.oninput=renderTok;renderTok();
+
+// ---------- Vector search demo ----------
+const docs=[
+ {t:'วิธีดูแลไก่ที่เป็นโรคหวัด และการแยกเลี้ยง',k:['ไก่','ป่วย','โรค','ดูแล','รักษา','สุขภาพ']},
+ {t:'ตารางวัคซีนสำหรับไก่ไข่',k:['ไก่','ไข่','วัคซีน','ป้องกัน','โรค','สุขภาพ']},
+ {t:'ราคาไข่ไก่ประจำสัปดาห์',k:['ไข่','ราคา','ตลาด','ขาย']},
+ {t:'สูตรอาหารเพิ่มผลผลิตไข่',k:['ไข่','อาหาร','ไก่','ผลผลิต']},
+ {t:'การออกแบบโรงเรือนระบายอากาศ',k:['โรงเรือน','อากาศ','ไก่','สุขภาพ']}
+];
+const syn={'ป่วย':['ป่วย','ไม่สบาย','โรค','เจ็บ'],'รักษา':['ทำยังไง','แก้','รักษา','ดูแล'],'ราคา':['ราคา','เท่าไหร่','บาท','ขาย'],'อาหาร':['อาหาร','กิน','สูตร'],'ไข่':['ไข่'],'ไก่':['ไก่'],'วัคซีน':['วัคซีน','ฉีด'],'โรงเรือน':['โรงเรือน','เล้า','บ้าน']};
+function concepts(q){const c=new Set();for(const k in syn)if(syn[k].some(w=>q.includes(w))){c.add(k);if(k==='ป่วย')c.add('โรค').add('สุขภาพ')}return c}
+function renderVec(){const c=concepts(vecIn.value);
+ const r=docs.map(d=>{const hit=d.k.filter(k=>c.has(k)).length;
+  return{t:d.t,s:c.size?hit/Math.sqrt(d.k.length*c.size):0}}).sort((a,b)=>b.s-a.s);
+ vecOut.innerHTML=r.map(x=>`<div class="bar"><span class="lab">${x.t}</span><span class="track"><div class="fill" style="width:${Math.round(Math.min(x.s,1)*100)}%"></div></span><span class="num">${x.s.toFixed(2)}</span></div>`).join('')}
+vecIn.oninput=renderVec;renderVec();
+
+// ---------- Quiz ----------
+const Q=[
+ {q:'RAG ย่อมาจากอะไร?',a:['Random Answer Generator','Retrieval-Augmented Generation','Rapid AI Graph'],c:1},
+ {q:'ทำไม LLM ต้องค้นเว็บ?',a:['เพราะความรู้ในตัวหยุดที่ knowledge cutoff','เพื่อให้พิมพ์เร็วขึ้น','เพื่อลดขนาดโมเดล'],c:0},
+ {q:'DNS ทำหน้าที่อะไร?',a:['สร้างคำตอบ','แปลงชื่อโดเมนเป็น IP address','เก็บ embedding'],c:1},
+ {q:'Vector Search วัดความใกล้ด้วยอะไรบ่อยที่สุด?',a:['จำนวนตัวอักษร','Cosine Similarity','ขนาดไฟล์'],c:1}
+];
+let score=0,done=0;
+Q.forEach(o=>{const d=document.createElement('div');d.className='card quiz';d.innerHTML=`<b>${o.q}</b>`;
+ o.a.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;
+  b.onclick=()=>{if(d.dataset.done)return;d.dataset.done=1;done++;
+   if(i===o.c){b.classList.add('ok');score++}else{b.classList.add('no');d.querySelectorAll('button')[o.c].classList.add('ok')}
+   if(done===Q.length)document.getElementById('score').textContent=`คะแนน ${score}/${Q.length} ${score===Q.length?'🎉 ยอดเยี่ยม!':''}`};
+  d.appendChild(b)});quizBox.appendChild(d)});
+</script>
+</body>
+</html>
