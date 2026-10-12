@@ -1,0 +1,8 @@
+.sb { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.sb-btn { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 16px; border-radius: 10px; font: 600 1rem system-ui, sans-serif; cursor: pointer; transition: filter .15s; }
+.sb-btn:hover:not(:disabled) { filter: brightness(.96); }
+.sb-btn:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+.sb-btn:disabled { opacity: .7; cursor: default; }
+.sb-line { background: #06c755; color: #fff; border: 0; }
+.sb-google { background: #fff; color: #1f1f1f; border: 1px solid #dadce0; }
+.sb-error { margin: 0; color: #dc2626; font-size: .875rem; text-align: center; }

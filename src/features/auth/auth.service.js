@@ -1,5 +1,6 @@
-import { signInRequest } from '../../infrastructure/authClient'
+import { signInRequest, startSocialSignIn } from '../../infrastructure/authClient'
 import { validateLoginInput } from './auth.rules'
+import { isSupportedProvider } from './social.rules'
 
 export const SIGN_IN_FAILED_MESSAGE = 'Sign in failed. Please try again.'
 
@@ -16,4 +17,11 @@ export async function signIn(credentials, request = signInRequest) {
     console.error('signIn request failed', cause?.message)
     throw new AuthError(SIGN_IN_FAILED_MESSAGE, { cause })
   }
+}
+
+export const UNSUPPORTED_PROVIDER_MESSAGE = 'This sign-in method is not available.'
+
+export function signInWithProvider(provider, start = startSocialSignIn) {
+  if (!isSupportedProvider(provider)) throw new AuthError(UNSUPPORTED_PROVIDER_MESSAGE)
+  return start(provider)
 }
