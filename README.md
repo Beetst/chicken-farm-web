@@ -1,36 +1,12 @@
-# chicken-farm-web (login designs)
+# chicken-farm-web (LINE + Google login)
 
-A catalog of ready-to-use login pages built with React + Vite.
+Passwordless login page (LINE + Google) built with React + Vite. No password field, so no password to leak.
 
-**Live demo:** https://beetst.github.io/chicken-farm-web/
+## Use it
 
-| Design | Preview path | Highlights |
-|---|---|---|
-| **LINE + Google** | `#/passwordless` | Passwordless: LINE / Google only, no password field |
-| **LINE + Google Split** | `#/passwordless-split` | Passwordless with brand panel |
-| Minimal | `#/minimal` | Clean centered card |
-| Split | `#/split` | Brand panel + form, show/hide password, remember me |
-| Dark | `#/dark` | Glassmorphism on dark background |
-| Social | `#/social` | Google / Facebook / LINE buttons + email |
-
-## Use a design in another project
-
-Copy `src/features/auth/` (keep `ui/<Name>.*` you need) and `src/infrastructure/authClient.js`.
-Replace `signInRequest` in `authClient.js` with your real API call.
-
-## Passwordless (LINE / Google) setup
-
-The passwordless designs have no password field, so there is no password to leak or brute-force.
-Set `VITE_AUTH_API_BASE` (see `.env.example`); buttons then redirect to `<base>/auth/line/start` or
-`<base>/auth/google/start`. Without it they run in demo mode. Your backend handles the OAuth flow and
-keeps the client secrets. See the security notes in `docs/SYSTEM_MAP.md`.
-
-## Add a new design
-
-1. Create `src/features/auth/ui/<Name>.jsx` (+ `.css`, prefix class names to avoid clashes)
-2. Register it in `src/app/designs.js`
-
-Structure and rules: see `docs/SYSTEM_MAP.md` and `CLAUDE.md`.
+Set `VITE_AUTH_API_BASE` (see `.env.example`). Buttons redirect to `<base>/auth/line/start` or
+`<base>/auth/google/start`; your backend runs the OAuth flow and keeps the secrets.
+Without it the page runs in demo mode. See `docs/SYSTEM_MAP.md` for structure and security notes.
 
 ## Develop
 
@@ -40,4 +16,4 @@ npm run dev
 npm test
 ```
 
-Pushing to `main` deploys to GitHub Pages automatically (`.github/workflows/deploy.yml`).
+Pushing to `main` deploys to GitHub Pages (`.github/workflows/deploy.yml`).

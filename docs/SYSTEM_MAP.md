@@ -1,47 +1,38 @@
 # System Map
 
-```
-index.html → src/main.jsx → src/app/App.jsx        (hash router + gallery)
-                               └─ src/app/designs.js (registry of designs)
-                                     └─ features/auth/ui/<Design>.jsx  (UI only)
-                                           └─ features/auth/useLogin.js  (form state)
-                                                 └─ features/auth/auth.service.js  signIn()
-                                                       ├─ features/auth/auth.rules.js  validateLoginInput()
-                                                       └─ infrastructure/authClient.js  signInRequest()  ← swap for real API
+Passwordless login page: LINE and Google only. No password field anywhere.
 
-Passwordless (LINE / Google):
-features/auth/ui/Passwordless*.jsx → ui/SocialButtons.jsx → useSocialLogin.js
-  → auth.service.js signInWithProvider() → social.rules.js isSupportedProvider()
-  → infrastructure/authClient.js startSocialSignIn()
-      → redirects to  ${VITE_AUTH_API_BASE}/auth/<provider>/start   (demo mode if unset)
+```
+index.html → src/main.jsx → src/app/App.jsx
+  └─ features/auth/ui/Passwordless.jsx        (page layout)
+       └─ features/auth/ui/SocialButtons.jsx  (LINE / Google buttons, "ใช้ล่าสุด" badge)
+            └─ features/auth/useSocialLogin.js
+                 ├─ features/auth/auth.service.js  signInWithProvider()
+                 │    ├─ features/auth/social.rules.js  isSupportedProvider()
+                 │    └─ infrastructure/authClient.js   startSocialSignIn()
+                 │         → redirects to ${VITE_AUTH_API_BASE}/auth/<provider>/start (demo mode if unset)
+                 └─ infrastructure/lastProvider.js  read/saveLastProvider()
 ```
 
 | Path | Responsibility |
 |---|---|
-| `src/app/` | Routing, gallery page, design registry |
-| `src/features/auth/ui/` | One self-contained design per file (`.jsx` + prefixed `.css`) |
-| `src/features/auth/useLogin.js` | React form state, calls `signIn` |
-| `src/features/auth/auth.service.js` | Sign-in use case; maps technical errors to user-facing messages |
-| `src/features/auth/auth.rules.js` | Pure validation rules (no React) |
-| `src/features/auth/auth.test.js` | Unit tests for rules and service |
-| `src/features/auth/social.rules.js` | Allow-list of passwordless providers (LINE, Google) |
-| `src/features/auth/useSocialLogin.js` | React state for provider buttons |
-| `src/features/auth/ui/SocialButtons.jsx` | Shared LINE / Google buttons |
-| `src/features/auth/social.test.js` | Tests for provider allow-list and redirect adapter |
-| `src/infrastructure/authClient.js` | Backend adapter (currently fake) |
-| `src/infrastructure/lastProvider.js` | Remembers last-used provider id for the "ใช้ล่าสุด" badge (no tokens) |
-
-## Routes
-`#/` gallery · `#/passwordless` · `#/passwordless-split` · `#/minimal` · `#/split` · `#/dark` · `#/social`
+| `src/app/App.jsx` | Renders the login page |
+| `src/features/auth/ui/` | Page layout and provider buttons (prefixed CSS: `pl-`, `sb-`) |
+| `src/features/auth/useSocialLogin.js` | React state for the buttons |
+| `src/features/auth/auth.service.js` | Sign-in use case; rejects unknown providers |
+| `src/features/auth/social.rules.js` | Allow-list of providers (LINE, Google) |
+| `src/infrastructure/authClient.js` | Redirect adapter to the auth backend |
+| `src/infrastructure/lastProvider.js` | Remembers last-used provider id (no tokens) |
+| `*.test.js` | Unit tests |
 
 ## Security notes
-Frontend only. Authentication, authorization and authoritative validation belong to the real backend behind `authClient.js`. The `Social` design's buttons are placeholders.
-
-Passwordless designs never handle passwords or tokens in the browser. The backend must own the whole OAuth flow:
+The browser never handles passwords or tokens. The backend must own the whole OAuth flow:
 register LINE Login / Google OAuth apps, keep client secrets server-side, use `state` (and PKCE), exchange the code
 server-side, verify the ID token, then set an `HttpOnly; Secure; SameSite` session cookie and redirect back.
 
-## UX principles (passwordless designs)
+## UX principles
 - One heading, two buttons, one tiny legal line. No paragraphs.
-- Thai labels for Thai customers; big 52px tap targets; LINE first (most used in Thailand).
-- "ใช้ล่าสุด" badge on the provider used last, so returning users tap without thinking.
+- Thai labels; 52px tap targets; LINE first (most used in Thailand).
+- "ใช้ล่าสุด" badge on the provider used last.
+
+Earlier password-based designs were removed; they remain in git history.

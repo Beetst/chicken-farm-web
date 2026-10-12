@@ -1,9 +1,0 @@
-.mn { min-height: 100vh; display: grid; place-items: center; padding: 16px; background: #f3f4f6; }
-.mn-card { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; padding: 32px; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,.08); color: #111; }
-.mn-card h1 { margin: 0; font-size: 1.5rem; }
-.mn-card label { display: flex; flex-direction: column; gap: 6px; font-size: .9rem; }
-.mn-card input { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; }
-.mn-card input:focus { outline: 2px solid #2563eb; border-color: transparent; }
-.mn-card button { padding: 12px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-size: 1rem; cursor: pointer; }
-.mn-card button:disabled { opacity: .6; cursor: default; }
-.mn-error { margin: 0; color: #dc2626; font-size: .875rem; }
