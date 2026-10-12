@@ -1,6 +1,6 @@
 # Project rules
 
-Follows the BEET7 "Good Code & Good Architecture" guide. Read `docs/SYSTEM_MAP.md` first.
+Follows `AI_PLAYBOOK.md` (general rules) and the BEET7 guide. Read `docs/SYSTEM_MAP.md` first.
 
 ## Commands
 - `npm test` — unit tests (Vitest)
